@@ -1,0 +1,45 @@
+from selenium import webdriver
+from selenium.webdriver.support.select import Select
+import time, datetime, os, random
+k=0
+j=0
+
+idc=str(input("请输入学号："))
+pas=str(input("请输入密码："))
+
+for i in range(1,100000):
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("–incognito")
+    #chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    time_i=""
+    time_j=""
+    try:
+        driver = webdriver.Chrome(os.getcwd()+'\\chromedriver.exe',options=chrome_options)
+        driver.get("http://xgsys.swjtu.edu.cn/SPCPTest3/Web/")
+        element_id=driver.find_element_by_id('username')
+        element_passwd=driver.find_element_by_id('password')
+        element_id.send_keys(idc)
+        element_passwd.send_keys(pas)
+        element_btn_login=driver.find_element_by_xpath(".//button[@type='submit' and @class='auth_login_btn primary full_width']")
+        element_btn_login.click()
+        time.sleep(2)
+        driver.get("http://xgsys.swjtu.edu.cn/SPCPTest3/Web/Report/Index")
+        element_chk=driver.find_element_by_xpath(".//input[@type='checkbox' and @id='ckCLS']" )
+        element_chk.click()
+        element_btn_sub=driver.find_element_by_xpath(".//button[@type='button' and @class='save_form']")
+        element_btn_sub.click()
+        time_i=time.asctime( time.localtime(time.time()) )
+        k=k+1
+        print('打卡成功')
+    except:
+        driver.quit()
+        j=j+1
+        time_j=time.asctime( time.localtime(time.time()) )
+        print('打卡失败')    
+    finally:
+        driver.quit()
+        print("上次打卡失败"+str(j)+time_j)
+        print("上次打卡成功"+str(k)+time_i)
+        time.sleep(86400)
